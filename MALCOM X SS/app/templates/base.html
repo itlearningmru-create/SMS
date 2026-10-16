@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}MX-SMS{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  </head>
+  <body>
+    {% if current_user.is_authenticated %}
+    <div class="app-shell d-flex">
+      <aside class="sidebar">
+        <div class="brand-box">
+          <img
+            class="school-badge sidebar-school-badge"
+            src="{{ url_for('static', filename=school.profile_photo) if school and school.profile_photo else url_for('static', filename='images/school-badge.png') }}"
+            alt="{{ school.name ~ ' profile picture' if school and school.profile_photo else 'Malcolm X Secondary School badge' }}"
+          />
+          <div>
+            <div class="brand-name">MX-SMS</div>
+            <small>{{ school_name }}</small>
+          </div>
+        </div>
+
+        <nav class="nav flex-column mt-4 sidebar-nav">
+          {% for module in module_nav %}
+            <a class="nav-link {% if request.endpoint == module.route %}active{% endif %}" href="{{ url_for(module.route) }}">
+              <i class="bi {{ module.icon }}"></i>
+              <span>{{ module.label }}</span>
+            </a>
+          {% endfor %}
+        </nav>
+      </aside>
+
+      <main class="content-area">
+        <header class="topbar">
+          <div>
+            <span class="badge bg-primary-subtle text-primary">
+              {{ 'Student portal' if is_student_user else user_role }}
+            </span>
+          </div>
+          <div class="topbar-actions">
+            <span class="me-3"><i class="bi bi-bell"></i> Alerts</span>
+            <span class="me-3"><i class="bi bi-search"></i> Search</span>
+            <span class="user-pill"><i class="bi bi-person-circle"></i> {{ current_user.full_name }}</span>
+            {% if not is_student_user %}
+              <a href="{{ url_for('main.staff_change_password') }}" class="btn btn-sm btn-outline-primary ms-3">Change password</a>
+            {% endif %}
+            <a href="{{ url_for('main.logout') }}" class="btn btn-sm btn-outline-secondary ms-3">Logout</a>
+          </div>
+        </header>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="flash-stack mt-3">
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+        <div class="page-body">{% block content %}{% endblock %}</div>
+      </main>
+    </div>
+    {% else %}
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="flash-stack container mt-3">
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+      {% block auth_content %}{% endblock %}
+    {% endif %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

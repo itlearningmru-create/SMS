@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Details | MX-SMS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h2 class="page-title">{{ student.full_name }}</h2>
+    <p class="text-muted mb-0">{{ student.student_no }}</p>
+  </div>
+  <a href="{{ url_for('main.students') }}" class="btn btn-outline-secondary">Back to list</a>
+</div>
+
+<div class="row g-4">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body d-flex flex-wrap align-items-center gap-4">
+        {% if student.passport_photo %}
+          <img
+            src="{{ url_for('main.student_passport_photo', student_id=student.id) }}"
+            alt="{{ student.full_name }} passport photo"
+            class="rounded border"
+            style="width: 120px; height: 150px; object-fit: cover;"
+          />
+        {% else %}
+          <div class="rounded border bg-light d-flex align-items-center justify-content-center text-muted" style="width: 120px; height: 150px;">
+            No photo
+          </div>
+        {% endif %}
+        {% if user_role in ['Super Administrator', 'Director of Studies', 'Headmaster'] %}
+          <form method="POST" enctype="multipart/form-data" action="{{ url_for('main.upload_student_passport_photo', student_id=student.id) }}">
+            {{ photo_form.hidden_tag() }}
+            {{ photo_form.passport_photo.label(class_='form-label') }}
+            {{ photo_form.passport_photo(class_='form-control', accept='.jpg,.jpeg,.png,.webp') }}
+            <div class="form-text mb-2">JPG, PNG, or WebP; maximum 5 MB.</div>
+            {{ photo_form.submit(class_='btn btn-primary btn-sm') }}
+          </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card h-100">
+      <div class="card-header"><strong>Student profile</strong></div>
+      <div class="card-body">
+        <dl class="row mb-0">
+          <dt class="col-sm-4">Gender</dt><dd class="col-sm-8">{{ student.gender }}</dd>
+          <dt class="col-sm-4">Date of birth</dt><dd class="col-sm-8">{{ student.dob.strftime('%d %b %Y') }}</dd>
+          <dt class="col-sm-4">Nationality</dt><dd class="col-sm-8">{{ student.nationality }}</dd>
+          <dt class="col-sm-4">Email</dt><dd class="col-sm-8">{{ student.email or '—' }}</dd>
+          <dt class="col-sm-4">Phone</dt><dd class="col-sm-8">{{ student.phone or '—' }}</dd>
+          <dt class="col-sm-4">Class and stream</dt><dd class="col-sm-8">{{ student.placement.class_room.label if student.placement else student.entry_class }}</dd>
+          <dt class="col-sm-4">Status</dt><dd class="col-sm-8"><span class="badge bg-success-subtle text-success">{{ student.status }}</span></dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card h-100">
+      <div class="card-header"><strong>Academic notes</strong></div>
+      <div class="card-body">
+        <p class="mb-0">{{ student.notes or 'No additional academic or welfare notes recorded.' }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}School Settings | MX-SMS{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+  <h2 class="page-title">School Information</h2>
+  <p class="text-muted mb-0">Update the school identity and contact information shown across the system.</p>
+</div>
+<div class="card" style="max-width: 800px;">
+  <div class="card-body">
+    {% if school and school.profile_photo %}
+      <div class="mb-4 text-center">
+        <img
+          src="{{ url_for('static', filename=school.profile_photo) }}"
+          alt="{{ school.name }} profile picture"
+          class="rounded border"
+          style="max-width: 180px; max-height: 180px; object-fit: cover;"
+        />
+      </div>
+    {% endif %}
+    <form method="POST" enctype="multipart/form-data">
+      {{ form.hidden_tag() }}
+      <div class="row g-3">
+        <div class="col-12">{{ form.name.label(class_='form-label') }}{{ form.name(class_='form-control') }}</div>
+        <div class="col-12">
+          {{ form.profile_photo.label(class_='form-label') }}
+          {{ form.profile_photo(class_='form-control', accept='.jpg,.jpeg,.png,.webp') }}
+          <div class="form-text">Upload a JPG, PNG, or WebP image no larger than 5 MB.</div>
+        </div>
+        <div class="col-12">{{ form.slogan.label(class_='form-label') }}{{ form.slogan(class_='form-control') }}</div>
+        <div class="col-12">{{ form.address.label(class_='form-label') }}{{ form.address(class_='form-control', rows=3) }}</div>
+        <div class="col-md-4">{{ form.phone.label(class_='form-label') }}{{ form.phone(class_='form-control') }}</div>
+        <div class="col-md-4">{{ form.alternative_phone.label(class_='form-label') }}{{ form.alternative_phone(class_='form-control') }}</div>
+        <div class="col-md-4">{{ form.email.label(class_='form-label') }}{{ form.email(class_='form-control') }}</div>
+        <div class="col-md-4">{{ form.website.label(class_='form-label') }}{{ form.website(class_='form-control') }}</div>
+        <div class="col-md-4">
+          {{ form.co_education.label(class_='form-label') }}
+          {{ form.co_education(class_='form-control') }}
+        </div>
+        <div class="col-12"><hr /><strong>Academic tracks and registration</strong></div>
+        <div class="col-md-6">
+          <div class="form-check">{{ form.is_active(class_='form-check-input') }}{{ form.is_active.label(class_='form-check-label') }}</div>
+          <div class="form-check">{{ form.o_level_active(class_='form-check-input') }}{{ form.o_level_active.label(class_='form-check-label') }}</div>
+          <div class="form-check">{{ form.a_level_active(class_='form-check-input') }}{{ form.a_level_active.label(class_='form-check-label') }}</div>
+          <div class="form-check">{{ form.moes_registered(class_='form-check-input') }}{{ form.moes_registered.label(class_='form-check-label') }}</div>
+          <div class="form-check">{{ form.uneb_exam_center_valid(class_='form-check-input') }}{{ form.uneb_exam_center_valid.label(class_='form-check-label') }}</div>
+        </div>
+        <div class="col-md-6">
+          {{ form.o_level_curriculum.label(class_='form-label') }}
+          {{ form.o_level_curriculum(class_='form-control') }}
+          <label class="form-label mt-3">O-Level grading module</label>
+          <input class="form-control" value="CBC 20/80" readonly />
+          {{ form.a_level_curriculum.label(class_='form-label mt-3') }}
+          {{ form.a_level_curriculum(class_='form-control') }}
+        </div>
+        <div class="col-md-6">
+          {{ form.cbc_formative_weight.label(class_='form-label') }}
+          {{ form.cbc_formative_weight(class_='form-control', min=0, max=100) }}
+        </div>
+        <div class="col-md-6">
+          {{ form.cbc_summative_weight.label(class_='form-label') }}
+          {{ form.cbc_summative_weight(class_='form-control', min=0, max=100) }}
+        </div>
+        <div class="col-12 form-text">CBC weights must add up to exactly 100%.</div>
+      </div>
+      <div class="mt-4">{{ form.submit(class_='btn btn-primary') }}</div>
+    </form>
+  </div>
+</div>
+{% endblock %}

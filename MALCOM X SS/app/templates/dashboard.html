@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard | MX-SMS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h2 class="page-title">School Overview</h2>
+    <p class="text-muted mb-0">{{ school.name if school else 'Malcolm X Secondary School Katwe' }}</p>
+  </div>
+  {% if user_role == 'Super Administrator' %}
+    <a href="{{ url_for('main.new_student') }}" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Add Student</a>
+  {% endif %}
+</div>
+
+<div class="row g-4">
+  <div class="col-md-3">
+    <div class="stat-card primary">
+      <div class="label">Students</div>
+      <div class="value">{{ total_students }}</div>
+      <div class="subtext">Current records</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="stat-card info">
+      <div class="label">Classes</div>
+      <div class="value">{{ total_classes }}</div>
+      <div class="subtext">Streamed groups</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="stat-card success">
+      <div class="label">Subjects</div>
+      <div class="value">{{ total_subjects }}</div>
+      <div class="subtext">Course catalog</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="stat-card warning">
+      <div class="label">Teachers</div>
+      <div class="value">{{ total_teachers }}</div>
+      <div class="subtext">Teaching staff</div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4 mt-1">
+  <div class="col-lg-8">
+    <div class="card h-100">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Operational summary</h5>
+        <span class="badge bg-light text-dark">Live</span>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="mini-panel">
+              <div class="mini-title">Admissions</div>
+              <div class="mini-number">42</div>
+              <div class="subtext">Applicants in review</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mini-panel">
+              <div class="mini-title">Fees collected</div>
+              <div class="mini-number">UGX 18.6M</div>
+              <div class="subtext">Term-to-date</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mini-panel">
+              <div class="mini-title">Attendance</div>
+              <div class="mini-number">94.3%</div>
+              <div class="subtext">Average weekly rate</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mini-panel">
+              <div class="mini-title">Results</div>
+              <div class="mini-number">82%</div>
+              <div class="subtext">Pass rate</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card h-100">
+      <div class="card-header">
+        <h5 class="mb-0">Recent activity</h5>
+      </div>
+      <div class="card-body">
+        <ul class="activity-list">
+          {% for log in latest_logs %}
+            <li>
+              <div class="dot"></div>
+              <div>
+                <strong>{{ log.actor }}</strong>
+                <div>{{ log.action }}</div>
+                <small>{{ log.created_at.strftime('%d %b %Y %H:%M') }}</small>
+              </div>
+            </li>
+          {% else %}
+            <li>No recent activity.</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

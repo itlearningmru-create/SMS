@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Enter Marks | MX-SMS{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+  <h2 class="page-title">Enter marks</h2>
+  <p class="text-muted mb-0">{{ assignment.subject.name }} · {{ assignment.class_room.label }}</p>
+</div>
+<div class="card mb-4">
+  <div class="card-body">
+    {% if students and assessments %}
+      <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="row g-3 align-items-end">
+          <div class="col-lg-4">{{ form.student_id.label(class_='form-label') }}{{ form.student_id(class_='form-select') }}</div>
+          <div class="col-lg-3">{{ form.assessment_id.label(class_='form-label') }}{{ form.assessment_id(class_='form-select') }}</div>
+          <div class="col-lg-2">{{ form.score.label(class_='form-label') }}{{ form.score(class_='form-control', min='0', step='0.01') }}</div>
+          <div class="col-lg-3">{{ form.remarks.label(class_='form-label') }}{{ form.remarks(class_='form-control') }}</div>
+        </div>
+        {% for error in form.score.errors %}<div class="text-danger small mt-2">{{ error }}</div>{% endfor %}
+        <div class="form-text mt-2">Marks must be between 0 and the assessment maximum.</div>
+        <div class="mt-3">{{ form.submit(class_='btn btn-primary') }}</div>
+      </form>
+    {% elif not students %}
+      <div class="alert alert-info mb-0">No enrolled students are placed in this class/stream yet.</div>
+    {% else %}
+      <div class="alert alert-info mb-0">There are no open assessments. Ask the Super Administrator to configure an assessment.</div>
+    {% endif %}
+  </div>
+</div>
+<a href="{{ url_for('main.teacher_work') }}" class="btn btn-outline-secondary">Back to my teaching</a>
+{% endblock %}

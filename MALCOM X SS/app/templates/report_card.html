@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}Report Card | MX-SMS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 report-actions">
+  <div>
+    <h2 class="page-title">Student Report Card</h2>
+    <p class="text-muted mb-0">{{ assessment.name }} · {{ assessment.term }} · {{ assessment.academic_year.name }}</p>
+  </div>
+  <button type="button" class="btn btn-primary" onclick="window.print()">Print report card</button>
+</div>
+<div class="card report-card">
+  <div class="card-body p-4 p-lg-5">
+    <div class="text-center border-bottom pb-3 mb-4">
+      <h2 class="mb-1">{{ school_name }}</h2>
+      <h4 class="text-muted">Student Report Card</h4>
+      <p class="mb-0">{{ assessment.name }} · {{ assessment.term }} · {{ assessment.academic_year.name }}</p>
+    </div>
+    <dl class="row">
+      <dt class="col-sm-3">Student</dt><dd class="col-sm-9">{{ student.full_name }}</dd>
+      <dt class="col-sm-3">Student number</dt><dd class="col-sm-9">{{ student.student_no }}</dd>
+      <dt class="col-sm-3">Class/stream</dt><dd class="col-sm-9">{{ student.placement.class_room.label if student.placement else student.entry_class }}</dd>
+    </dl>
+    {% if student.passport_photo %}
+      <div class="mb-3">
+        <img
+          src="{{ url_for('main.student_passport_photo', student_id=student.id) }}"
+          alt="{{ student.full_name }} passport photo"
+          class="rounded border"
+          style="width: 90px; height: 110px; object-fit: cover;"
+        />
+      </div>
+    {% endif %}
+    {% if cbc_mode %}
+      <p class="text-muted">S1–S4 CBC weighting: normalized component marks are averaged within each component, then Formative 20% + Summative 80% are combined. No stanine aggregate or division is applied.</p>
+      {% if has_incomplete %}
+        <div class="alert alert-warning" role="alert">Incomplete CA Record: at least one subject is missing a submitted formative or summative component.</div>
+      {% endif %}
+      <div class="table-responsive">
+        <table class="table table-bordered align-middle">
+          <thead class="table-light">
+            <tr><th>Subject</th><th>Formative (scaled / 20)</th><th>Summative (scaled / 80)</th><th>Total / 100</th><th>Grade</th><th>Competency descriptor</th><th>Teacher comments</th></tr>
+          </thead>
+          <tbody>
+            {% for mark in cbc_marks %}
+              <tr>
+                <td>{{ mark.subject.name }}</td>
+                <td>{{ ('%.2f / 20'|format(mark.formative_score)) if mark.formative_score is not none else '—' }}</td>
+                <td>{{ ('%.2f / 80'|format(mark.summative_score)) if mark.summative_score is not none else '—' }}</td>
+                <td>{{ ('%.2f'|format(mark.total)) if mark.total is not none else '—' }}</td>
+                <td>{{ mark.grade }}</td>
+                <td>{{ mark.descriptor }}</td>
+                <td>{{ mark.comments or '—' }}</td>
+              </tr>
+            {% else %}
+              <tr><td colspan="7" class="text-center text-muted">No submitted subject marks for this assessment period.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle">
+        <thead class="table-light"><tr><th>Subject</th><th>Mark</th><th>Maximum</th><th>Teacher comment</th></tr></thead>
+        <tbody>
+          {% for result, subject in marks %}
+            <tr><td>{{ subject.name }}</td><td>{{ '%.2f'|format(result.score) }}</td><td>{{ assessment.max_marks }}</td><td>{{ result.remarks or '—' }}</td></tr>
+          {% else %}
+            <tr><td colspan="4" class="text-center text-muted">No submitted subject marks for this assessment.</td></tr>
+          {% endfor %}
+        </tbody>
+        {% if marks %}
+          <tfoot><tr><th>Total</th><th>{{ '%.2f'|format(total_score) }}</th><th>{{ total_maximum }}</th><th>{{ '%.1f'|format((total_score / total_maximum * 100) if total_maximum else 0) }}%</th></tr></tfoot>
+        {% endif %}
+      </table>
+    </div>
+    {% endif %}
+    <div class="row mt-5">
+      <div class="col-6"><div class="border-top pt-2">Director of Studies signature</div></div>
+      <div class="col-6"><div class="border-top pt-2">Headmaster signature</div></div>
+    </div>
+  </div>
+</div>
+{% endblock %}

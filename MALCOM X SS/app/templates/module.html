@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ module.label }} | MX-SMS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h2 class="page-title"><i class="bi {{ module.icon }} me-2"></i>{{ module.label }}</h2>
+    <p class="text-muted mb-0">Operational module overview and management panel</p>
+  </div>
+</div>
+
+<div class="row g-4">
+  {% if records %}
+    {% for record in records %}
+      <div class="col-md-4">
+        <div class="card h-100">
+          <div class="card-body">
+            {% if record.name %}
+              <h5 class="card-title">{{ record.name }}</h5>
+            {% elif record.full_name %}
+              <h5 class="card-title">{{ record.full_name }}</h5>
+            {% elif record.student_no %}
+              <h5 class="card-title">{{ record.student_no }}</h5>
+            {% elif record.actor %}
+              <h5 class="card-title">{{ record.actor }}</h5>
+            {% elif record.title %}
+              <h5 class="card-title">{{ record.title }}</h5>
+            {% else %}
+              <h5 class="card-title">{{ record }}</h5>
+            {% endif %}
+
+            {% if record.description %}
+              <p class="text-muted mb-0">{{ record.description }}</p>
+            {% elif record.action %}
+              <p class="text-muted mb-0">{{ record.action }}</p>
+            {% elif record.phone %}
+              <p class="text-muted mb-0">{{ record.phone }}</p>
+            {% elif record.status %}
+              <p class="text-muted mb-0">{{ record.status }}</p>
+            {% else %}
+              <p class="text-muted mb-0">School record</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body text-center text-muted py-5">
+          <i class="bi bi-info-circle fs-1 d-block mb-3"></i>
+          This module is ready for operational configuration and live data entry.
+        </div>
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+{% if users or roles %}
+<div class="row g-4 mt-1">
+  {% if users %}
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header"><strong>Users</strong></div>
+        <div class="list-group list-group-flush">
+          {% for user in users %}
+            <div class="list-group-item d-flex justify-content-between">
+              <span>{{ user.full_name }}</span>
+              <span class="text-muted">{{ user.username }}</span>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  {% if roles %}
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header"><strong>Roles</strong></div>
+        <div class="list-group list-group-flush">
+          {% for role in roles %}
+            <div class="list-group-item d-flex justify-content-between">
+              <span>{{ role.name }}</span>
+              <span class="badge bg-light text-dark">{{ role.users|length }} users</span>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+</div>
+{% endif %}
+{% endblock %}

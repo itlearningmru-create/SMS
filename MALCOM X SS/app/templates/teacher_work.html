@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}My Teaching | MX-SMS{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+  <h2 class="page-title">My Teaching</h2>
+  <p class="text-muted mb-0">{{ teacher.full_name if teacher else current_user.full_name }} · Your assigned subjects and classes</p>
+</div>
+<div class="card">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead><tr><th>Subject</th><th>Class/stream</th><th>Students</th><th></th></tr></thead>
+      <tbody>
+        {% for assignment, student_count in assignment_rows %}
+          <tr>
+            <td>{{ assignment.subject.name }} <span class="text-muted">({{ assignment.subject.code }})</span></td>
+            <td>{{ assignment.class_room.label }}</td>
+            <td>{{ student_count }}</td>
+            <td><a class="btn btn-sm btn-primary" href="{{ url_for('main.enter_marks', assignment_id=assignment.id) }}">Enter marks</a></td>
+          </tr>
+        {% else %}
+          <tr><td colspan="4" class="text-center text-muted py-4">No subjects are assigned to your account yet. Contact the DOS or HM.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

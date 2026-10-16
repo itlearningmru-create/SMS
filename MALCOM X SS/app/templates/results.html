@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Results and Report Cards | MX-SMS{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+  <h2 class="page-title">Results and Report Cards</h2>
+  <p class="text-muted mb-0">Review submitted marks and print a student report card for the assessment period.</p>
+</div>
+<div class="card">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead><tr><th>Student</th><th>Student number</th><th>Class</th><th>Assessment period</th><th></th></tr></thead>
+      <tbody>
+        {% for student, assessment in report_pairs %}
+          <tr>
+            <td>{{ student.full_name }}</td>
+            <td>{{ student.student_no }}</td>
+            <td>{{ student.placement.class_room.label if student.placement else student.entry_class }}</td>
+            <td>{{ assessment.term }} · {{ assessment.academic_year.name }}</td>
+            <td><a class="btn btn-sm btn-outline-primary" href="{{ url_for('main.report_card', student_id=student.id, assessment_id=assessment.id) }}">View / print</a></td>
+          </tr>
+        {% else %}
+          <tr><td colspan="5" class="text-center text-muted py-4">No submitted results are available yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

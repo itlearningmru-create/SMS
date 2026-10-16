@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Portal | MX-SMS{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+  <h2 class="page-title">Welcome, {{ student.full_name }}</h2>
+  <p class="text-muted mb-0">Your student portal</p>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-6">
+    <div class="card h-100">
+      <div class="card-header"><strong>My profile</strong></div>
+      <div class="card-body">
+        <dl class="row mb-0">
+          <dt class="col-sm-4">Student number</dt>
+          <dd class="col-sm-8">{{ student.student_no }}</dd>
+          <dt class="col-sm-4">Name</dt>
+          <dd class="col-sm-8">{{ student.full_name }}</dd>
+          <dt class="col-sm-4">Class</dt>
+          <dd class="col-sm-8">{{ student.placement.class_room.label if student.placement else student.entry_class }}</dd>
+          <dt class="col-sm-4">Admission status</dt>
+          <dd class="col-sm-8">{{ student.status }}</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card h-100">
+      <div class="card-header"><strong>Student services</strong></div>
+      <div class="card-body">
+        <p class="text-muted mb-0">
+          Timetables, results, and announcements will appear here when they are
+          available from the school.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

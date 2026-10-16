@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Student | MX-SMS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h2 class="page-title">{{ title }}</h2>
+    <p class="text-muted mb-0">Capture admission and student profile information</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <form method="POST" enctype="multipart/form-data">
+      {{ form.hidden_tag() }}
+      <div class="row g-3">
+        <div class="col-md-4">
+          {{ form.student_no.label(class_='form-label') }}
+          {{ form.student_no(class_='form-control') }}
+        </div>
+        <div class="col-md-4">
+          {{ form.first_name.label(class_='form-label') }}
+          {{ form.first_name(class_='form-control') }}
+        </div>
+        <div class="col-md-4">
+          {{ form.last_name.label(class_='form-label') }}
+          {{ form.last_name(class_='form-control') }}
+        </div>
+        <div class="col-md-3">
+          {{ form.gender.label(class_='form-label') }}
+          {{ form.gender(class_='form-select') }}
+        </div>
+        <div class="col-md-3">
+          {{ form.dob.label(class_='form-label') }}
+          {{ form.dob(class_='form-control') }}
+        </div>
+        <div class="col-md-3">
+          {{ form.nationality.label(class_='form-label') }}
+          {{ form.nationality(class_='form-control') }}
+        </div>
+        <div class="col-md-3">
+          {{ form.class_room_id.label(class_='form-label') }}
+          {{ form.class_room_id(class_='form-select') }}
+          {% if not form.class_room_id.choices %}
+            <div class="form-text">A class and stream must be configured before registering students.</div>
+          {% endif %}
+        </div>
+        <div class="col-md-4">
+          {{ form.email.label(class_='form-label') }}
+          {{ form.email(class_='form-control') }}
+        </div>
+        <div class="col-md-4">
+          {{ form.phone.label(class_='form-label') }}
+          {{ form.phone(class_='form-control') }}
+        </div>
+        <div class="col-md-4">
+          {{ form.status.label(class_='form-label') }}
+          {{ form.status(class_='form-select') }}
+        </div>
+        <div class="col-md-6">
+          {{ form.passport_photo.label(class_='form-label') }}
+          {{ form.passport_photo(class_='form-control', accept='.jpg,.jpeg,.png,.webp') }}
+          <div class="form-text">Optional during registration. JPG, PNG, or WebP; maximum 5 MB.</div>
+        </div>
+        <div class="col-12">
+          {{ form.notes.label(class_='form-label') }}
+          {{ form.notes(class_='form-control', rows=4) }}
+        </div>
+      </div>
+      <div class="mt-4 d-flex gap-2">
+        {{ form.submit(class_='btn btn-primary') }}
+        <a href="{{ url_for('main.students') }}" class="btn btn-outline-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
